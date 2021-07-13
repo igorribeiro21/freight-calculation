@@ -62,14 +62,32 @@ function App() {
 
   }
   function calcular() {
-    let calculoTotalMercadoriaTres = valorMercadoria.replace('.','').replace(',','') * 3 / 100;
-    let calculoTotalMercadoriaTresMeio = valorMercadoria.replace('.','').replace(',','') * 3.5 / 100;
-    let calculoPeso = peso * valorCobradoPeso;
-    let calculoVolume = valorCobradoVolume * volume;
-    setTotalValorMercadoriaTres(calculoTotalMercadoriaTres);
-    setTotalValorMercadoriaTresMeio(calculoTotalMercadoriaTresMeio);
-    setTotalPeso(calculoPeso);
-    setTotalVolume(calculoVolume);
+
+    if (valorMercadoria !== null && valorMercadoria !== 0) {
+      let calculoTotalMercadoriaTres = valorMercadoria.replace('.', '').replace(',', '.') * 3 / 100;
+      let calculoTotalMercadoriaTresMeio = valorMercadoria.replace('.', '').replace(',', '.') * 3.5 / 100;
+
+      setTotalValorMercadoriaTres(calculoTotalMercadoriaTres.toFixed(2).replace('.', ','));
+      setTotalValorMercadoriaTresMeio(calculoTotalMercadoriaTresMeio.toFixed(2).replace('.', ','));
+    } else {
+      setTotalValorMercadoriaTres(0);
+      setTotalValorMercadoriaTresMeio(0);
+    }
+
+    if (peso !== null && peso !== 0 && valorCobradoPeso !== null && valorCobradoPeso !== 0) {
+      let calculoPeso = peso.replace('.', '').replace(',', '.') * valorCobradoPeso.replace(',', '.');
+      setTotalPeso(calculoPeso.toFixed(2).replace('.', ','));
+    } else {
+      setTotalPeso(0);
+    }
+
+    if (valorCobradoVolume !== null && valorCobradoVolume !== 0 && volume !== null && volume !== 0) {
+      let calculoVolume = valorCobradoVolume.replace(',', '.') * volume;
+      setTotalVolume(calculoVolume.toFixed(2).replace('.', ','));
+    } else {
+      setTotalVolume(0);
+    }
+
     setVisibleResultados(true);
   }
 
@@ -100,6 +118,11 @@ function App() {
     var valor = formatarMoeda(e.target.value);
     setValorCobradoPeso(valor);
   }
+
+  function onChangeValorVolume(e) {
+    var valor = formatarMoeda(e.target.value);
+    setValorCobradoVolume(valor);
+  }
   function formatarMoeda(valor) {
     valor = valor + '';
     valor = parseInt(valor.replace(/[\D]+/g, ''));
@@ -110,8 +133,17 @@ function App() {
       valor = valor.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
     }
 
+    if (valor == 'NaN')
+      valor = 0;
+
+    if (valor.length > 0) {
+      if (valor.substr(0, 1) == ',')
+        valor = '0,' + valor.substr(1);
+    }
+
     return valor;
   }
+
   return (
     <div className="App">
       <div style={styles.container}>
@@ -144,7 +176,7 @@ function App() {
           />
           <Input
             value={valorCobradoVolume}
-            onChange={e => setValorCobradoVolume(e.target.value)}
+            onChange={e => onChangeValorVolume(e)}
           />
         </div>
       </div>
