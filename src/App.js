@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import {
   Input,
   Button
 } from '@material-ui/core';
-
-import CurrentInput from 'react-currency-masked-input';
+import img from './images/js.jpeg';
 
 function App() {
   const [valorMercadoria, setValorMercadoria] = useState(0);
@@ -27,13 +25,13 @@ function App() {
     },
     textInformation: {
       fontSize: 20,
-      fontWeight: 'bold',
+      fontWeight: '600',
       right: 0,
       marginTop: 5
     },
     textTotalInformation: {
       fontSize: 20,
-      fontWeight: 'bold',
+      fontWeight: '600',
       right: 0,
       marginTop: 5
     },
@@ -58,6 +56,13 @@ function App() {
       fontSize: 18,
       width: 120,
       marginLeft: 15
+    },
+    inputStyle: {
+      color: '#fff',
+      border: '1px solid',
+      borderRadius: 5,
+      borderColor: 'rgb(98, 98, 99)',
+      width: 100
     }
 
   }
@@ -146,6 +151,7 @@ function App() {
 
   return (
     <div className="App">
+      <img src={img} width={140} height={140} />
       <div style={styles.container}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <span style={styles.textInformation}>Valor da Mercadoria:</span>
@@ -159,24 +165,29 @@ function App() {
             value={valorMercadoria}
             onChange={e => onChangeValorMercadoria(e)}
             placeholder="Digite o valor da mercadoria"
+            style={styles.inputStyle}
           />
           <Input
             value={peso}
             onChange={e => onChangePeso(e)}
             placeholder="Digite o peso da mercadoria"
+            style={styles.inputStyle}
           />
           <Input
             value={volume}
             onChange={e => setVolume(e.target.value)}
             placeholder="Digite a quantidade de volumes"
+            style={styles.inputStyle}
           />
           <Input
             value={valorCobradoPeso}
             onChange={e => onChangeValorPeso(e)}
+            style={styles.inputStyle}
           />
           <Input
             value={valorCobradoVolume}
             onChange={e => onChangeValorVolume(e)}
+            style={styles.inputStyle}
           />
         </div>
       </div>
