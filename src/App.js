@@ -14,88 +14,174 @@ function App() {
   const [volume, setVolume] = useState(0);
   const [valorCobradoPeso, setValorCobradoPeso] = useState(0);
   const [valorCobradoVolume, setValorCobradoVolume] = useState(0);
-  const [totalPesoTres, setTotalPesoTres] = useState('');
-  const [totalPesoTresMeio, setTotalPesoTresMeio] = useState('');
+  const [totalValorMercadoriaTres, setTotalValorMercadoriaTres] = useState('');
+  const [totalValorMercadoriaTresMeio, setTotalValorMercadoriaTresMeio] = useState('');
   const [totalPeso, setTotalPeso] = useState('');
+  const [totalVolume, setTotalVolume] = useState('');
+  const [visibleResultados, setVisibleResultados] = useState(false);
   const styles = {
     container: {
       width: 500,
       height: 200,
       display: 'flex',
-      flexDirection: 'column',
-      //backgroundColor: 'blue'
     },
     textInformation: {
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: 'bold',
-      marginRight: 10,
-      right: 0
+      right: 0,
+      marginTop: 5
     },
+    textTotalInformation: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      right: 0,
+      marginTop: 5
+    },
+    textTotalValue: {
+      fontSize: 20,
+      right: 0,
+      marginTop: 5
+    },
+    btnLimpar: {
+      backgroundColor: '#d9534f',
+      color: '#fff',
+      fontWeight: 'bold',
+      borderRadius: 5,
+      fontSize: 18,
+      width: 120
+    },
+    btnCalcular: {
+      backgroundColor: '#0275d8',
+      color: '#fff',
+      fontWeight: 'bold',
+      borderRadius: 5,
+      fontSize: 18,
+      width: 120,
+      marginLeft: 15
+    }
 
   }
   function calcular() {
-    let calculoTotalMercadoriaTres = valorMercadoria * 3 / 100;
-    let calculoTotalMercadoriaTresMeio = valorMercadoria * 3.5 / 100;
+    let calculoTotalMercadoriaTres = valorMercadoria.replace('.','').replace(',','') * 3 / 100;
+    let calculoTotalMercadoriaTresMeio = valorMercadoria.replace('.','').replace(',','') * 3.5 / 100;
     let calculoPeso = peso * valorCobradoPeso;
-    setTotalPesoTres(calculoTotalMercadoriaTres)
-    setTotalPesoTresMeio(calculoTotalMercadoriaTresMeio)
-    setTotalPeso(calculoPeso)
-
-
+    let calculoVolume = valorCobradoVolume * volume;
+    setTotalValorMercadoriaTres(calculoTotalMercadoriaTres);
+    setTotalValorMercadoriaTresMeio(calculoTotalMercadoriaTresMeio);
+    setTotalPeso(calculoPeso);
+    setTotalVolume(calculoVolume);
+    setVisibleResultados(true);
   }
 
+  function limpar() {
+    setTotalValorMercadoriaTres('');
+    setTotalValorMercadoriaTresMeio('');
+    setTotalPeso('');
+    setTotalVolume('');
+    setValorMercadoria(0);
+    setPeso(0);
+    setVolume(0);
+    setValorCobradoPeso(0);
+    setValorCobradoVolume(0);
+    setVisibleResultados(false);
+  }
+
+  function onChangeValorMercadoria(e) {
+    var valor = formatarMoeda(e.target.value);
+    setValorMercadoria(valor);
+  }
+
+  function onChangePeso(e) {
+    var valor = formatarMoeda(e.target.value);
+    setPeso(valor);
+  }
+
+  function onChangeValorPeso(e) {
+    var valor = formatarMoeda(e.target.value);
+    setValorCobradoPeso(valor);
+  }
+  function formatarMoeda(valor) {
+    valor = valor + '';
+    valor = parseInt(valor.replace(/[\D]+/g, ''));
+    valor = valor + '';
+    valor = valor.replace(/([0-9]{2})$/g, ",$1");
+
+    if (valor.length > 6) {
+      valor = valor.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+    }
+
+    return valor;
+  }
   return (
     <div className="App">
       <div style={styles.container}>
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           <span style={styles.textInformation}>Valor da Mercadoria:</span>
+          <span style={styles.textInformation}>Peso: </span>
+          <span style={styles.textInformation}>Volumes:</span>
+          <span style={styles.textInformation}>Valor cobrado por Peso:</span>
+          <span style={styles.textInformation}>Valor cobrado por Volumes:</span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 10 }}>
           <Input
             value={valorMercadoria}
-            onChange={e => setValorMercadoria(e.target.value)}
+            onChange={e => onChangeValorMercadoria(e)}
             placeholder="Digite o valor da mercadoria"
           />
-        </div>
-        <div>
-          <span style={styles.textInformation}>Peso: </span>
           <Input
             value={peso}
-            onChange={e => setPeso(e.target.value)}
+            onChange={e => onChangePeso(e)}
             placeholder="Digite o peso da mercadoria"
           />
-        </div>
-        <div>
-          <span style={styles.textInformation}>Volumes:</span>
           <Input
             value={volume}
             onChange={e => setVolume(e.target.value)}
             placeholder="Digite a quantidade de volumes"
           />
-        </div>
-        <div style={{ marginTop: 20 }}>
-          <span style={styles.textInformation}>Valor cobrado por Peso:</span>
           <Input
             value={valorCobradoPeso}
-            onChange={e => setValorCobradoPeso(e.target.value)}
+            onChange={e => onChangeValorPeso(e)}
           />
-        </div>
-        <div style={{ marginTop: 10 }}>
-          <span style={styles.textInformation}>Valor cobrado por Volumes:</span>
           <Input
             value={valorCobradoVolume}
             onChange={e => setValorCobradoVolume(e.target.value)}
           />
         </div>
-
+      </div>
+      <div>
         <Button
+          style={styles.btnLimpar}
+          onClick={() => limpar()}
+        >
+          Limpar
+        </Button>
+        <Button
+          style={styles.btnCalcular}
           onClick={() => calcular()}
         >
           Calcular
         </Button>
-        <span>{totalPesoTres}</span>
-        <span>{totalPesoTresMeio}</span>
-        <span>{totalPeso}</span>
-      
       </div>
+      {
+        visibleResultados &&
+        (
+          <div style={{ display: 'flex' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={styles.textTotalInformation}>Total Valor da Mercadoria à 3%:</span>
+              <span style={styles.textTotalInformation}>Total Valor da Mercadoria à 3.5%:</span>
+              <span style={styles.textTotalInformation}>Total por Peso:</span>
+              <span style={styles.textTotalInformation}>Total por Volumes:</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', marginLeft: 20 }}>
+              <span style={styles.textTotalValue}>{totalValorMercadoriaTres}</span>
+              <span style={styles.textTotalValue}>{totalValorMercadoriaTresMeio}</span>
+              <span style={styles.textTotalValue}>{totalPeso}</span>
+              <span style={styles.textTotalValue}>{totalVolume}</span>
+            </div>
+          </div>
+
+        )
+      }
     </div>
   );
 }
